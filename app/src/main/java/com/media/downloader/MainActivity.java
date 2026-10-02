@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
                 YtDlpRequest request = new YtDlpRequest(url.trim());
                 request.addOption("--dump-single-json");
                 request.addOption("--skip-download");
-                request.addOption("--extractor-args", "youtube:player_client=tv");
+                request.addOption("--extractor-args", "youtube:player_client=android");
 
                 YtDlpResponse response = YtDlp.execute(request, null);
 
