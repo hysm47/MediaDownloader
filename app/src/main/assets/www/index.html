@@ -358,9 +358,12 @@ function generate() {
     if (!reply.ok) {
       const detail = [
         reply.error || '',
-        reply.output || ''
+        reply.message || '',
+        reply.stackTrace || '',
+        reply.output || '',
+        reply.errorOutput || ''
       ].filter(Boolean).join('\n');
-      throw new Error(detail || reply.message || 'Unknown yt-dlp error');
+      throw new Error(detail || 'Unknown yt-dlp error');
     }
     $('statusText').textContent = `${T('bridge_ok', 'Android bridge connected.')}\n${selected}`;
   } catch (e) {
