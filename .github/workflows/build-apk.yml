@@ -50,6 +50,8 @@ jobs:
           echo "===== YtDlp FULL BYTECODE ====="
           javap -c -p -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlp > /tmp/ytdlp-bytecode.txt
           cat /tmp/ytdlp-bytecode.txt
+          echo "===== YtDlpException IN EXECUTE ====="
+          grep -n -B 20 -A 30 "YtDlpException" /tmp/ytdlp-bytecode.txt || true
           javap -c -p -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlpException
       - uses: actions/upload-artifact@v4
         with:
