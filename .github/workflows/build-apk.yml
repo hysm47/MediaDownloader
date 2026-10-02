@@ -41,6 +41,7 @@ jobs:
           echo "===== AAR PYTHON/CHAQUOPY CONTENT ====="
           echo "===== SEARCH ytdlp_runner INSIDE IMY ====="
           echo "===== SEARCH ytdlp_runner INSIDE APP.IMY ====="
+          mkdir -p /tmp/imy-inspect
           unzip -p "$AAR" assets/chaquopy/app.imy > /tmp/imy-inspect/app.imy
           file /tmp/imy-inspect/app.imy
           unzip -l /tmp/imy-inspect/app.imy | grep -i -E 'ytdlp_runner|yt_dlp|\.pyc$' | head -200 || true
