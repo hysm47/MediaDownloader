@@ -510,10 +510,7 @@ $('tabAudio').onclick = () => setMode('audio');
 $('url').addEventListener('input', reset);
 $('url').addEventListener('keydown', e => { if (e.key === 'Enter') generate(); });
 $('clearBtn').onclick = () => { $('url').value = ''; reset(); $('url').focus(); };
-$('genBtn').onclick = () => {
-  const result = window.testAndroidBridge();
-  alert('Android Bridge: ' + result);
-};
+$('genBtn').onclick = generate;
 
 // ---------- Apply language ----------
 function applyLang(l, save) {
