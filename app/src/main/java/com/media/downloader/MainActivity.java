@@ -12,7 +12,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-
+import dev.ffmpegkit_maintained.ytdlp.YtDlp;
+import dev.ffmpegkit_maintained.ytdlp.YtDlpException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,6 +34,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+try {
+    YtDlp.init(getApplicationContext());
+} catch (YtDlpException e) {
+    e.printStackTrace();
+}
 
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.parseColor("#0a101c"));
