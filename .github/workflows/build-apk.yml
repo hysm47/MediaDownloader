@@ -46,27 +46,10 @@ jobs:
           file /tmp/imy-inspect/app.imy
           unzip -l /tmp/imy-inspect/app.imy | grep -i -E 'ytdlp_runner|yt_dlp|\.pyc$' | head -200 || true
           echo "===== STRINGS ytdlp_runner INSIDE APP.IMY ====="
-          echo "===== DISASSEMBLE ytdlp_runner.pyc ====="
           unzip -p /tmp/imy-inspect/app.imy ytdlp_runner.pyc > /tmp/imy-inspect/ytdlp_runner.pyc
-          python - <<'PYCODE'
-          import marshal
-          import dis
-          import types
-
-          path = "/tmp/imy-inspect/ytdlp_runner.pyc"
-
-          with open(path, "rb") as f:
-              f.read(16)
-              code = marshal.load(f)
-
-          print("===== ytdlp_runner MODULE =====")
-          dis.dis(code)
-
-          for const in code.co_consts:
-              if isinstance(const, types.CodeType):
-                  print(f"===== FUNCTION: {const.co_name} =====")
-                  dis.dis(const)
-          PYCODE
+          echo "===== ytdlp_runner.pyc FOUND ====="
+          ls -lh /tmp/imy-inspect/ytdlp_runner.pyc
+          file /tmp/imy-inspect/ytdlp_runner.pyc
           strings /tmp/imy-inspect/app.imy | grep -i -E 'ytdlp_runner|yt_dlp|yt-dlp' | head -100 || true
           mkdir -p /tmp/imy-inspect
           unzip -p "$AAR" assets/chaquopy/requirements-common.imy > /tmp/imy-inspect/requirements-common.imy
