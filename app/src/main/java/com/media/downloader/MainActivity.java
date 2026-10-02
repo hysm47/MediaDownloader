@@ -17,6 +17,10 @@ import android.widget.FrameLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import org.json.JSONObject;
+import dev.ffmpegkit_maintained.ytdlp.YtDlp;
+import dev.ffmpegkit_maintained.ytdlp.YtDlpException;
+import dev.ffmpegkit_maintained.ytdlp.YtDlpRequest;
+import dev.ffmpegkit_maintained.ytdlp.YtDlpResponse;
 
 /**
  * Thin WebView wrapper. The application itself is assets/www/index.html, unmodified.
@@ -35,6 +39,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            YtDlp.init(getApplicationContext());
+        } catch (YtDlpException e) {
+            e.printStackTrace();
+        }
 
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.parseColor("#0a101c"));
@@ -118,15 +128,25 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public String requestDownload(String url, String mode, String choice) {
             try {
+                if (url == null || url.trim().isEmpty()) {
+                    return "{\"ok\":false,\"error\":\"empty_url\"}";
+                }
+
+                YtDlpRequest request = new YtDlpRequest(url.trim());
+                request.addOption("--dump-single-json");
+                request.addOption("--skip-download");
+
+                YtDlpResponse response = YtDlp.execute(request, null);
+
                 JSONObject result = new JSONObject();
-                result.put("ok", true);
-                result.put("stage", 3);
-                result.put("url", url == null ? "" : url);
-                result.put("mode", mode == null ? "" : mode);
-                result.put("choice", choice == null ? "" : choice);
+                result.put("ok", response.isSuccess());
+                result.put("exitCode", response.getExitCode());
+                result.put("output", response.getOutput() == null ? "" : response.getOutput());
+                result.put("error", response.getErrorOutput() == null ? "" : response.getErrorOutput());
                 return result.toString();
+
             } catch (Exception e) {
-                return "{\"ok\":false,\"error\":\"bridge_error\"}";
+                return "{\"ok\":false,\"error\":\"ytdlp_error\"}";
             }
         }
     }
