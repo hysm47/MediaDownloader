@@ -13,10 +13,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
 import android.widget.FrameLayout;
-import dev.ffmpegkit_maintained.ytdlp.YtDlp;
-import dev.ffmpegkit_maintained.ytdlp.YtDlpException;
+
 import java.io.IOException;
 import java.io.InputStream;
+import org.json.JSONObject;
 
 /**
  * Thin WebView wrapper. The application itself is assets/www/index.html, unmodified.
@@ -32,23 +32,9 @@ public class MainActivity extends Activity {
 
     private WebView web;
 
-private class DownloadBridge {
-
-    @JavascriptInterface
-    public String getVersion() {
-        return "4";
-    }
-}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-try {
-    YtDlp.init(getApplicationContext());
-} catch (YtDlpException e) {
-    e.printStackTrace();
-}
 
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.parseColor("#0a101c"));
@@ -62,7 +48,6 @@ try {
         });
 
         web = new WebView(this);
-web.addJavascriptInterface(new DownloadBridge(), "MediaDownloader");
         web.setBackgroundColor(Color.parseColor("#0a101c"));
         root.addView(web, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -75,6 +60,11 @@ web.addJavascriptInterface(new DownloadBridge(), "MediaDownloader");
         s.setAllowContentAccess(false);
         s.setSupportMultipleWindows(false);    // target="_blank" -> shouldOverrideUrlLoading
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+
+        // Expose a very small native bridge to the app-owned HTML page.
+        // Stage 3 only verifies communication; it does not download anything yet.
+        web.addJavascriptInterface(new DownloadBridge(), "MediaDownloader");
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -108,6 +98,36 @@ web.addJavascriptInterface(new DownloadBridge(), "MediaDownloader");
         }
         if (web.getUrl() == null) {
             web.loadUrl(HOME);
+        }
+    }
+
+
+    /**
+     * JavaScript bridge for the next download-engine stage.
+     *
+     * The bridge intentionally does not start a download yet. It only receives
+     * validated UI choices and returns an acknowledgement so the WebView/Android
+     * communication path can be tested independently.
+     */
+    private static final class DownloadBridge {
+        @JavascriptInterface
+        public String getVersion() {
+            return "3";
+        }
+
+        @JavascriptInterface
+        public String requestDownload(String url, String mode, String choice) {
+            try {
+                JSONObject result = new JSONObject();
+                result.put("ok", true);
+                result.put("stage", 3);
+                result.put("url", url == null ? "" : url);
+                result.put("mode", mode == null ? "" : mode);
+                result.put("choice", choice == null ? "" : choice);
+                return result.toString();
+            } catch (Exception e) {
+                return "{\"ok\":false,\"error\":\"bridge_error\"}";
+            }
         }
     }
 
