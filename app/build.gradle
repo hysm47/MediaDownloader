@@ -26,5 +26,9 @@ android {
     androidResources {
         noCompress 'html'
     }
+
 }
-// No third-party dependencies: the wrapper uses only the Android framework WebView.
+
+dependencies {
+    implementation 'dev.ffmpegkit-maintained:yt-dlp-android:2.0.2'
+}
