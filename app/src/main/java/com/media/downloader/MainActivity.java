@@ -167,6 +167,7 @@ public class MainActivity extends Activity {
                     result.put("ok", false);
                     result.put("error", e.getClass().getSimpleName());
                     result.put("message", detail.toString());
+        result.put("stackTrace", android.util.Log.getStackTraceString(e));
                     return result.toString();
                 } catch (Exception ignored) {
                     return "{\"ok\":false,\"error\":\"ytdlp_error\"}";
