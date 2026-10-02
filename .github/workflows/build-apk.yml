@@ -27,7 +27,18 @@ jobs:
 
       - name: Build APK
         run: gradle assembleDebug
-
+      - name: Inspect yt-dlp AAR
+        run: |
+          echo "Looking for yt-dlp AAR..."
+          find ~/.gradle/caches/modules-2/files-2.1/dev.ffmpegkit-maintained/yt-dlp-android/2.0.2 -type f -print
+          AAR=$(find ~/.gradle/caches/modules-2/files-2.1/dev.ffmpegkit-maintained/yt-dlp-android/2.0.2 -name '*.aar' | head -n 1)
+          if [ -z "$AAR" ]; then
+            echo "AAR not found"
+            exit 1
+          fi
+          echo "AAR=$AAR"
+          unzip -p "$AAR" classes.jar > /tmp/ytdlp-classes.jar
+          jar tf /tmp/ytdlp-classes.jar | grep -i ytdlp | head -100
       - uses: actions/upload-artifact@v4
         with:
           name: MediaDownloader-debug-apk
