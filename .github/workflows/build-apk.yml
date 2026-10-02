@@ -37,6 +37,8 @@ jobs:
             exit 1
           fi
           echo "AAR=$AAR"
+          echo "===== AAR CONTENT: PYTHON FILES ====="
+          unzip -l "$AAR" 2>/dev/null | grep -Ei 'ytdlp_runner|\.py$' | head -100 || true
           unzip -p "$AAR" classes.jar > /tmp/ytdlp-classes.jar
           jar tf /tmp/ytdlp-classes.jar | grep -i ytdlp | head -100
           javap -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlp
