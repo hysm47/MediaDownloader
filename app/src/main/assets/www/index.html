@@ -355,10 +355,13 @@ function generate() {
   try {
     const raw = window.MediaDownloader.requestDownload(options.url, options.mode, options.choice);
     const reply = JSON.parse(raw);
-    if (!reply.ok) throw new Error('bridge rejected request');
+    if (!reply.ok) {
+      const detail = reply.message || reply.error || 'Unknown Android error';
+      throw new Error(detail);
+    }
     $('statusText').textContent = `${T('bridge_ok', 'Android bridge connected.')}\n${selected}`;
-  } catch (_) {
-    $('statusText').textContent = T('bridge_error', 'Could not communicate with Android.');
+  } catch (e) {
+    $('statusText').textContent = `yt-dlp error: ${e.message || e}`;
   }
   $('out').classList.add('show');
   $('out').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
