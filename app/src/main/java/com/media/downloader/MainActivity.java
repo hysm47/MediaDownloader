@@ -146,7 +146,15 @@ public class MainActivity extends Activity {
                 return result.toString();
 
             } catch (Exception e) {
-                return "{\"ok\":false,\"error\":\"ytdlp_error\"}";
+                try {
+                    JSONObject result = new JSONObject();
+                    result.put("ok", false);
+                    result.put("error", e.getClass().getSimpleName());
+                    result.put("message", e.getMessage() == null ? "" : e.getMessage());
+                    return result.toString();
+                } catch (Exception ignored) {
+                    return "{\"ok\":false,\"error\":\"ytdlp_error\"}";
+                }
             }
         }
     }
