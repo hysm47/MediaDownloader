@@ -148,10 +148,25 @@ public class MainActivity extends Activity {
 
             } catch (Exception e) {
                 try {
+                    StringBuilder detail = new StringBuilder();
+                    Throwable current = e;
+                    int depth = 0;
+
+                    while (current != null && depth < 5) {
+                        if (depth > 0) detail.append("\\nCaused by: ");
+                        detail.append(current.getClass().getName());
+                        String msg = current.getMessage();
+                        if (msg != null && !msg.isEmpty()) {
+                            detail.append(": ").append(msg);
+                        }
+                        current = current.getCause();
+                        depth++;
+                    }
+
                     JSONObject result = new JSONObject();
                     result.put("ok", false);
                     result.put("error", e.getClass().getSimpleName());
-                    result.put("message", e.getMessage() == null ? "" : e.getMessage());
+                    result.put("message", detail.toString());
                     return result.toString();
                 } catch (Exception ignored) {
                     return "{\"ok\":false,\"error\":\"ytdlp_error\"}";
