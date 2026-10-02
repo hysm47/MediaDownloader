@@ -39,6 +39,7 @@ jobs:
           echo "AAR=$AAR"
           unzip -p "$AAR" classes.jar > /tmp/ytdlp-classes.jar
           jar tf /tmp/ytdlp-classes.jar | grep -i ytdlp | head -100
+          javap -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlp
       - uses: actions/upload-artifact@v4
         with:
           name: MediaDownloader-debug-apk
