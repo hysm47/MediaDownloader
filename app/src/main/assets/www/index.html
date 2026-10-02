@@ -640,6 +640,13 @@ if (!savedLang) savedLang = (navigator.language || '').toLowerCase().startsWith(
 
 setMode('video');
 applyLang(savedLang, false);
+
+window.testAndroidBridge = function() {
+  if (window.MediaDownloader && typeof window.MediaDownloader.getVersion === 'function') {
+    return window.MediaDownloader.getVersion();
+  }
+  return 'bridge_not_available';
+};
 </script>
 </body>
 </html>
