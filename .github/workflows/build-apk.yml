@@ -44,6 +44,8 @@ jobs:
           javap -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.DownloadProgressCallback
           javap -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlpResponse
           javap -c -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlp
+          echo "===== YtDlpException ====="
+          javap -c -p -classpath /tmp/ytdlp-classes.jar dev.ffmpegkit_maintained.ytdlp.YtDlpException
       - uses: actions/upload-artifact@v4
         with:
           name: MediaDownloader-debug-apk
