@@ -11,6 +11,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.JavascriptInterface;
 import android.widget.FrameLayout;
 import dev.ffmpegkit_maintained.ytdlp.YtDlp;
 import dev.ffmpegkit_maintained.ytdlp.YtDlpException;
@@ -30,6 +31,14 @@ public class MainActivity extends Activity {
     private static final String HOME = "https://" + HOST + "/index.html";
 
     private WebView web;
+
+private class DownloadBridge {
+
+    @JavascriptInterface
+    public String getVersion() {
+        return "4";
+    }
+}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,7 @@ try {
         });
 
         web = new WebView(this);
+web.addJavascriptInterface(new DownloadBridge(), "MediaDownloader");
         web.setBackgroundColor(Color.parseColor("#0a101c"));
         root.addView(web, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
